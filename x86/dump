@@ -5,31 +5,30 @@ build/bin/system.elf:     file format elf32-i386
 Disassembly of section .text:
 
 00007c00 <_start>:
-    7c00:	ea 07 7c 00 00 00 00 	ljmp   $0x0,$0x7c07
+    7c00:	ea 05 7c 00 00   	ljmp   $0xb8,$0x7c05
 
-00007c07 <offest>:
-    7c07:	66 b8 00 00          	mov    $0x0,%ax
-    7c0b:	8e d8                	mov    %eax,%ds
-    7c0d:	8e d0                	mov    %eax,%ss
-    7c0f:	8e c0                	mov    %eax,%es
-    7c11:	8e e0                	mov    %eax,%fs
-    7c13:	8e e8                	mov    %eax,%gs
-    7c15:	bc 00 7c 00 00       	mov    $0x7c00,%esp
+00007c05 <offest>:
+    7c05:	b8 00 00 8e d8       	mov    $0xd88e0000,%eax
+    7c0a:	8e d0                	mov    %eax,%ss
+    7c0c:	8e c0                	mov    %eax,%es
+    7c0e:	8e e0                	mov    %eax,%fs
+    7c10:	8e e8                	mov    %eax,%gs
+    7c12:	66 bc 00 7c          	mov    $0x7c00,%sp
+	...
 
-00007c1a <boot_load>:
-    7c1a:	66 bb 00 7e          	mov    $0x7e00,%bx
-    7c1e:	66 b9 02 00          	mov    $0x2,%cx
-    7c22:	66 b8 40 02          	mov    $0x240,%ax
-    7c26:	cd 13                	int    $0x13
-    7c28:	72 f0                	jb     7c1a <boot_load>
-    7c2a:	fa                   	cli    
-    7c2b:	0f 01 15 2f 7e 00 00 	lgdtl  0x7e2f
-    7c32:	0f 20 c0             	mov    %cr0,%eax
-    7c35:	83 c8 01             	or     $0x1,%eax
-    7c38:	0f 22 c0             	mov    %eax,%cr0
-    7c3b:	ea 00 7e 00 00 08 00 	ljmp   $0x8,$0x7e00
+00007c18 <boot_load>:
+    7c18:	bb 00 7e b9 02       	mov    $0x2b97e00,%ebx
+    7c1d:	00 b8 40 02 cd 13    	add    %bh,0x13cd0240(%eax)
+    7c23:	72 f3                	jb     7c18 <boot_load>
+    7c25:	fa                   	cli    
+    7c26:	0f 01 16             	lgdtl  (%esi)
+    7c29:	31 7e 0f             	xor    %edi,0xf(%esi)
+    7c2c:	20 c0                	and    %al,%al
+    7c2e:	66 83 c8 01          	or     $0x1,%ax
+    7c32:	0f 22 c0             	mov    %eax,%cr0
+    7c35:	ea 00 7e 08 00   	ljmp   $0x0,$0x87e00
 
-00007c42 <boot_sig>:
+00007c3a <boot_sig>:
 	...
     7dfe:	55                   	push   %ebp
     7dff:	aa                   	stos   %al,%es:(%edi)
@@ -50,14 +49,13 @@ Disassembly of section .text:
     7e24:	0f 20 c0             	mov    %cr0,%eax
     7e27:	0d 00 00 00 80       	or     $0x80000000,%eax
     7e2c:	0f 22 c0             	mov    %eax,%cr0
+    7e2f:	eb fe                	jmp    7e2f <protected_mode_start+0x2f>
 
-00007e2f <gdt_desc>:
-    7e2f:	ff 07                	incl   (%edi)
-    7e31:	00 90 00 00      	add    %dl,-0x140c0000(%eax)
-
-00007e35 <j_>:
-    7e35:	f4                   	hlt    
-    7e36:	eb fd                	jmp    7e35 <j_>
+00007e31 <gdt_desc>:
+    7e31:	ff 07                	incl   (%edi)
+    7e33:	00                   	.byte 0x0
+    7e34:	90                   	nop
+	...
 
 Disassembly of section .data:
 
@@ -107,7 +105,8 @@ Disassembly of section .debug_aranges:
   24:	00 00                	add    %al,(%eax)
   26:	00 00                	add    %al,(%eax)
   28:	00 7c 00 00          	add    %bh,0x0(%eax,%eax,1)
-  2c:	38 02                	cmp    %al,(%edx)
+  2c:	37                   	aaa    
+  2d:	02 00                	add    (%eax),%al
 	...
 
 Disassembly of section .debug_info:
@@ -200,7 +199,7 @@ Disassembly of section .debug_info:
   ca:	0c 0a                	or     $0xa,%al
   cc:	b3 00                	mov    $0x0,%bl
   ce:	00 00                	add    %al,(%eax)
-  d0:	00 20                	add    %ah,(%eax)
+  d0:	00 10                	add    %dl,(%eax)
   d2:	05 03 00 80 00       	add    $0x800003,%eax
   d7:	00 0a                	add    %cl,(%edx)
   d9:	78 00                	js     db <_start-0x7b25>
@@ -228,7 +227,7 @@ Disassembly of section .debug_info:
  10a:	00 00                	add    %al,(%eax)
  10c:	00 00                	add    %al,(%eax)
  10e:	7c 00                	jl     110 <_start-0x7af0>
- 110:	00 b8 04 25 01 00    	add    %bh,0x12504(%eax)
+ 110:	00 b7 04 25 01 00    	add    %dh,0x12504(%edi)
  116:	00 2c 01             	add    %ch,(%ecx,%eax,1)
  119:	00 00                	add    %al,(%eax)
  11b:	41                   	inc    %ecx
@@ -365,9 +364,10 @@ Disassembly of section .debug_line:
   3e:	07                   	pop    %es
   3f:	00 00                	add    %al,(%eax)
   41:	00 02                	add    %al,(%edx)
-  43:	69 00 00 00 05 00    	imul   $0x50000,(%eax),%eax
-  49:	04 00                	add    $0x0,%al
-  4b:	2e 00 00             	add    %al,%cs:(%eax)
+  43:	6a 00                	push   $0x0
+  45:	00 00                	add    %al,(%eax)
+  47:	05 00 04 00 2e       	add    $0x2e000400,%eax
+  4c:	00 00                	add    %al,(%eax)
   4e:	00 01                	add    %al,(%ecx)
   50:	01 01                	add    %eax,(%ecx)
   52:	fb                   	sti    
@@ -392,30 +392,29 @@ Disassembly of section .debug_line:
   7a:	00 00                	add    %al,(%eax)
   7c:	01 00                	add    %eax,(%eax)
   7e:	05 02 00 7c 00       	add    $0x7c0002,%eax
-  83:	00 19                	add    %bl,(%ecx)
-  85:	77 4c                	ja     d3 <_start-0x7b2d>
-  87:	2f                   	das    
-  88:	2f                   	das    
-  89:	2f                   	das    
+  83:	00 03                	add    %al,(%ebx)
+  85:	09 01                	or     %eax,(%ecx)
+  87:	5b                   	pop    %ebx
+  88:	3e 2f                	ds das 
   8a:	2f                   	das    
-  8b:	30 5b 4b             	xor    %bl,0x4b(%ebx)
-  8e:	4b                   	dec    %ebx
-  8f:	4b                   	dec    %ebx
-  90:	2f                   	das    
-  91:	30 21                	xor    %ah,(%ecx)
-  93:	76 3d                	jbe    d2 <_start-0x7b2e>
-  95:	3d 3e 02 c5 03       	cmp    $0x3c5023e,%eax
-  9a:	19 59 3e             	sbb    %ebx,0x3e(%ecx)
-  9d:	4b                   	dec    %ebx
-  9e:	2f                   	das    
-  9f:	2f                   	das    
+  8b:	2f                   	das    
+  8c:	2f                   	das    
+  8d:	30 69 3d             	xor    %ch,0x3d(%ecx)
+  90:	3d 3d 2f 30 21       	cmp    $0x21302f3d,%eax
+  95:	5a                   	pop    %edx
+  96:	3d 4b 3e 02 cb       	cmp    $0xcb023e4b,%eax
+  9b:	03 1a                	add    (%edx),%ebx
+  9d:	59                   	pop    %ecx
+  9e:	3e 4b                	ds dec %ebx
   a0:	2f                   	das    
   a1:	2f                   	das    
-  a2:	31 5a 3d             	xor    %ebx,0x3d(%edx)
-  a5:	3d 3e 3d 59 97       	cmp    $0x97593d3e,%eax
-  aa:	21 02                	and    %eax,(%edx)
-  ac:	02 00                	add    (%eax),%al
-  ae:	01 01                	add    %eax,(%ecx)
+  a2:	2f                   	das    
+  a3:	2f                   	das    
+  a4:	31 5a 3d             	xor    %ebx,0x3d(%edx)
+  a7:	3d 3e 3d 59 3e       	cmp    $0x3e593d3e,%eax
+  ac:	02 08                	add    (%eax),%cl
+  ae:	00 01                	add    %al,(%ecx)
+  b0:	01                   	.byte 0x1
 
 Disassembly of section .debug_str:
 

@@ -2,6 +2,8 @@
 #define PAGE_H
 
 #define PG_SIZE             1024
+#define PG_4K               4096
+#define MAP_ADDR            0x80000000
 
 #define PDE_P			(1 << 0)
 #define PDE_W			(1 << 1)

@@ -14,8 +14,8 @@ CC := i686-elf-
 
 O := -O3
 W := -Wall -Wextra
-CFLAGS := -std=gnu99 -ffreestanding $(O) $(W)
-LDFLAGS := -ffreestanding $(O) -nostdlib -lgcc
+CFLAGS := -std=gnu99 -ffreestanding -ffunction-sections -fdata-sections $(O) $(W)
+LDFLAGS := -ffreestanding $(O) -fno-pie -fno-stack-protector -nostdlib -nostdinc -lgcc
 
 SOURCE_FILES := $(wildcard source/*.c source/*.S) 
 OBJ_FILES := $(patsubst source/%.c, $(OBJECT_DIR)/%.o, $(patsubst source/%.S, $(OBJECT_DIR)/%.o, $(SOURCE_FILES)))
@@ -33,12 +33,13 @@ $(BIN_DIR)/$(OS_BIN): $(OBJ_FILES) | $(BIN_DIR)
 	$(CC)ld -Ttext=0x7c00 -m elf_i386 $(OBJ_FILES) -o $(BIN_DIR)/$(OS_ELF) 
 	${TOOL_PREFIX}objcopy -O binary $(BIN_DIR)/$(OS_ELF) $(BIN_DIR)/$(OS_BIN)
 	${TOOL_PREFIX}objdump -x -d -S $(BIN_DIR)/$(OS_ELF) > $(BIN_DIR)/$(OS_NAME)_dis.txt	
-	${TOOL_PREFIX}readelf -a $(BIN_DIR)/$(OS_ELF) > $(BIN_DIR)/$(OS_NAME)_elf.txt	
+	${TOOL_PREFIX}readelf -a $(BIN_DIR)/$(OS_ELF) > $(BIN_DIR)/$(OS_NAME)_elf.txt
+	dd if=/dev/zero of=$(BIN_DIR)/$(OS_IMG) bs=512 count=20160	
 	dd if=$(BIN_DIR)/$(OS_BIN) of=$(BIN_DIR)/$(OS_IMG) conv=notrunc
 
 all-debug: O := -O0
 all-debug: CFLAGS := -g -c -std=gnu99 -ffreestanding $(O) $(W) -fomit-frame-pointer
-all-debug: LDFLAGS := -ffreestanding $(O) -nostdlib -lgcc
+all-debug: LDFLAGS := -ffreestanding $(O) -fno-pie -fno-stack-protector -nostdlib -nostdinc -lgcc
 all-debug: clean $(BIN_DIR)/$(OS_BIN)
 	@i686-elf-objdump -D $(BIN_DIR)/$(OS_ELF) > dump
 	@xxd $(BIN_DIR)/$(OS_ELF) > dump.hex
