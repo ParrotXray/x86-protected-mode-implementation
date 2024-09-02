@@ -3,7 +3,9 @@
 .section .data
 
 .section .text
-    .global _start                 
+    .global _start       
+    
+    .code16          
     _start:   
         jmp $0, $offest
 
@@ -38,6 +40,7 @@
             .org 0x1fe
             .byte 0x55, 0xaa       
 
+        .code32  
         protected_mode_start:
             movl $pg_dir, %eax
             movl %eax, %cr3

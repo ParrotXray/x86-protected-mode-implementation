@@ -49,7 +49,7 @@ clean:
 	@rm -rf $(BUILD_DIR)
 
 run: $(BIN_DIR)/$(OS_IMG) 
-	@qemu-system-i386 -m 128M -no-reboot -drive file=$(BIN_DIR)/$(OS_IMG),index=0,media=disk,format=raw -monitor telnet::$(QEMU_MON_PORT),server,nowait &
+	@qemu-system-i386 -m 128M -drive file=$(BIN_DIR)/$(OS_IMG),index=0,media=disk,format=raw -monitor telnet::$(QEMU_MON_PORT),server,nowait &
 	@sleep 1
 	@telnet 127.0.0.1 $(QEMU_MON_PORT)
 
@@ -58,7 +58,7 @@ debug-bochs: all
 
 debug-qemu: all-debug
 	@objcopy --only-keep-debug $(BIN_DIR)/$(OS_ELF) $(BUILD_DIR)/kernel.dbg
-	@qemu-system-i386 -s -S -no-reboot -drive file=$(BIN_DIR)/$(OS_BIN),index=0,media=disk,format=raw &
+	@qemu-system-i386 -s -S -drive file=$(BIN_DIR)/$(OS_BIN),index=0,media=disk,format=raw &
 	@gdb -s $(BUILD_DIR)/kernel.dbg \
 		-ex "target remote localhost:1234" \
 		-ex "set disassembly-flavor intel" \
