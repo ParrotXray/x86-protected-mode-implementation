@@ -9,7 +9,7 @@ struct GDTDescriptor {
     uint16_t base_address_high;
 } __attribute__((aligned(8)));
 
-uint32_t pg_dir[PG_SIZE] __attribute__((aligned(8192))) =  {
+uint32_t pg_dir[PG_SIZE] __attribute__((aligned(4096))) =  {
     [0] = (0) | PDE_P | PDE_PS | PDE_W | PDE_U,	  
 };
 
