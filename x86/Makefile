@@ -14,7 +14,7 @@ CC := i686-elf-
 
 O := -O3
 W := -Wall -Wextra
-CFLAGS := -m32 -std=gnu99 -ffreestanding $(O) $(W)
+CFLAGS := -std=gnu99 -ffreestanding $(O) $(W)
 LDFLAGS := -ffreestanding $(O) -nostdlib -lgcc
 
 SOURCE_FILES := $(wildcard source/*.c source/*.S) 
@@ -49,7 +49,7 @@ clean:
 	@rm -rf $(BUILD_DIR)
 
 run: $(BIN_DIR)/$(OS_IMG) 
-	@qemu-system-i386 -m 128M -drive file=$(BIN_DIR)/$(OS_IMG),index=0,media=disk,format=raw -monitor telnet::$(QEMU_MON_PORT),server,nowait &
+	@qemu-system-i386 -d int -no-shutdown -no-reboot -m 128M -drive file=$(BIN_DIR)/$(OS_IMG),index=0,media=disk,format=raw -monitor telnet::$(QEMU_MON_PORT),server,nowait &
 	@sleep 1
 	@telnet 127.0.0.1 $(QEMU_MON_PORT)
 
