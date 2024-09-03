@@ -74,7 +74,6 @@ which -- "$TARGET-as" || echo "$TARGET-as is not in the PATH"
  make install-target-libgcc) || exit
 
 echo 'export PATH="$HOME/cross-compiler/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-
-echo "PATH updated and sourced"
+echo 'GCC built successfully!'
+echo 'Please run "source ~/.bashrc" to update your PATH.'
 echo "done"
