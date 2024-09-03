@@ -3,105 +3,111 @@ build/bin/system.elf:     file format elf32-i386
 build/bin/system.elf
 architecture: i386, flags 0x00000112:
 EXEC_P, HAS_SYMS, D_PAGED
-start address 0x00007c1b
+start address 0x00007c00
 
 Program Header:
     LOAD off    0x00000000 vaddr 0x00007000 paddr 0x00007000 align 2**12
-         filesz 0x00000e57 memsz 0x00000e57 flags r-x
-    LOAD off    0x00001000 vaddr 0x00009000 paddr 0x00009000 align 2**12
-         filesz 0x00004000 memsz 0x00004000 flags rw-
+         filesz 0x00005000 memsz 0x00005000 flags rwx
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000257  00007c00  00007c00  00000c00  2**4
+  0 .boottext     0000023c  00007c00  00007c00  00000c00  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00004000  00009000  00009000  00001000  2**12
+  1 .text         0000001b  00007e40  00007e40  00000e40  2**4
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .data         00000000  00007e60  00007e60  00000e60  2**4
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .comment      00000012  00000000  00000000  00005000  2**0
-                  CONTENTS, READONLY
+  3 .data.gdt_table 00000800  00007e60  00007e60  00000e60  2**5
+                  CONTENTS, ALLOC, LOAD, DATA
+  4 .data.pg_dir  00001000  00009000  00009000  00002000  2**12
+                  CONTENTS, ALLOC, LOAD, DATA
+  5 .data.page_table 00001000  0000a000  0000a000  00003000  2**12
+                  CONTENTS, ALLOC, LOAD, DATA
+  6 .data.map_phy_buffer 00001000  0000b000  0000b000  00004000  2**12
+                  CONTENTS, ALLOC, LOAD, DATA
 SYMBOL TABLE:
-00000000 l    df *ABS*	00000000 os.c
-0000b000 l     O .data	00001000 page_table
 00000000 l    df *ABS*	00000000 boot.o
-00007c20 l       .text	00000000 offest
-00007c33 l       .text	00000000 boot_load
-00007e51 l       .text	00000000 gdt_desc
-00007c54 l       .text	00000000 boot_sig
-00009000 g     O .data	00000800 gdt_table
-00007e1b g       .text	00000000 protected_mode_start
-0000c000 g     O .data	00001000 map_phy_buffer
-00007c00 g     F .text	0000001b _os_init
-00007c1b g       .text	00000000 _start
-0000d000 g       .data	00000000 __bss_start
-0000a000 g     O .data	00001000 pg_dir
-0000d000 g       .data	00000000 _edata
-0000d000 g       .data	00000000 _end
+00007c05 l       .boottext	00000000 offest
+00007c18 l       .boottext	00000000 boot_load
+00007e00 l       .boottext	00000000 _protected_mode_start
+00007e36 l       .boottext	00000000 gdt_desc
+00007c39 l       .boottext	00000000 boot_sig
+00000000 l    df *ABS*	00000000 os.c
+0000a000 l     O .data.page_table	00001000 page_table
+00007e60 g     O .data.gdt_table	00000800 gdt_table
+0000b000 g     O .data.map_phy_buffer	00001000 map_phy_buffer
+00007e40 g     F .text	0000001b _os_init
+00007c00 g       .boottext	00000000 _start
+00009000 g     O .data.pg_dir	00001000 pg_dir
 
 
+
+Disassembly of section .boottext:
+
+00007c00 <_start>:
+    7c00:	ea                   	.byte 0xea
+    7c01:	05                   	.byte 0x5
+    7c02:	7c 00                	jl     7c04 <_start+0x4>
+	...
+
+00007c05 <offest>:
+    7c05:	b8 00 00 8e d8       	mov    $0xd88e0000,%eax
+    7c0a:	8e d0                	mov    %eax,%ss
+    7c0c:	8e c0                	mov    %eax,%es
+    7c0e:	8e e0                	mov    %eax,%fs
+    7c10:	8e e8                	mov    %eax,%gs
+    7c12:	66 bc 00 7c          	mov    $0x7c00,%sp
+	...
+
+00007c18 <boot_load>:
+    7c18:	bb 00 7e b9 02       	mov    $0x2b97e00,%ebx
+    7c1d:	00 b8 40 02 cd 13    	add    %bh,0x13cd0240(%eax)
+    7c23:	72 f3                	jb     7c18 <boot_load>
+    7c25:	fa                   	cli    
+    7c26:	0f 01 16             	lgdtl  (%esi)
+    7c29:	36 7e 66             	ss jle 7c92 <boot_sig+0x59>
+    7c2c:	b8 01 00 00 00       	mov    $0x1,%eax
+    7c31:	0f 01 f0             	lmsw   %ax
+    7c34:	ea                   	.byte 0xea
+    7c35:	00 7e 08             	add    %bh,0x8(%esi)
+	...
+
+00007c39 <boot_sig>:
+	...
+    7dfd:	00 55 aa             	add    %dl,-0x56(%ebp)
+
+00007e00 <_protected_mode_start>:
+    7e00:	66 b8 10 00          	mov    $0x10,%ax
+    7e04:	8e d8                	mov    %eax,%ds
+    7e06:	8e d0                	mov    %eax,%ss
+    7e08:	8e c0                	mov    %eax,%es
+    7e0a:	8e e0                	mov    %eax,%fs
+    7e0c:	8e e8                	mov    %eax,%gs
+    7e0e:	bc 00 7c 00 00       	mov    $0x7c00,%esp
+    7e13:	e8 28 00 00 00       	call   7e40 <_os_init>
+    7e18:	b8 00 90 00 00       	mov    $0x9000,%eax
+    7e1d:	0f 22 d8             	mov    %eax,%cr3
+    7e20:	0f 20 e0             	mov    %cr4,%eax
+    7e23:	83 c8 10             	or     $0x10,%eax
+    7e26:	0f 22 e0             	mov    %eax,%cr4
+    7e29:	0f 20 c0             	mov    %cr0,%eax
+    7e2c:	0d 00 00 00 80       	or     $0x80000000,%eax
+    7e31:	0f 22 c0             	mov    %eax,%cr0
+    7e34:	eb fe                	jmp    7e34 <_protected_mode_start+0x34>
+
+00007e36 <gdt_desc>:
+    7e36:	ff 07                	incl   (%edi)
+    7e38:	60                   	pusha  
+    7e39:	7e 00                	jle    7e3b <gdt_desc+0x5>
+	...
 
 Disassembly of section .text:
 
-00007c00 <_os_init>:
-    7c00:	b8 00 b0 00 00       	mov    $0xb000,%eax
-    7c05:	83 c8 07             	or     $0x7,%eax
-    7c08:	a3 00 a8 00 00       	mov    %eax,0xa800
-    7c0d:	b8 00 c0 00 00       	mov    $0xc000,%eax
-    7c12:	83 c8 07             	or     $0x7,%eax
-    7c15:	a3 00 a0 00 00       	mov    %eax,0xa000
-    7c1a:	c3                   	ret    
-
-00007c1b <_start>:
-    7c1b:	ea                   	.byte 0xea
-    7c1c:	20 7c 00 00          	and    %bh,0x0(%eax,%eax,1)
-
-00007c20 <offest>:
-    7c20:	b8 00 00 8e d8       	mov    $0xd88e0000,%eax
-    7c25:	8e d0                	mov    %eax,%ss
-    7c27:	8e c0                	mov    %eax,%es
-    7c29:	8e e0                	mov    %eax,%fs
-    7c2b:	8e e8                	mov    %eax,%gs
-    7c2d:	66 bc 1b 7c          	mov    $0x7c1b,%sp
-	...
-
-00007c33 <boot_load>:
-    7c33:	bb 1b 7e b9 02       	mov    $0x2b97e1b,%ebx
-    7c38:	00 b8 40 02 cd 13    	add    %bh,0x13cd0240(%eax)
-    7c3e:	72 f3                	jb     7c33 <boot_load>
-    7c40:	fa                   	cli    
-    7c41:	0f 01 16             	lgdtl  (%esi)
-    7c44:	51                   	push   %ecx
-    7c45:	7e 66                	jle    7cad <boot_sig+0x59>
-    7c47:	b8 01 00 00 00       	mov    $0x1,%eax
-    7c4c:	0f 01 f0             	lmsw   %ax
-    7c4f:	ea                   	.byte 0xea
-    7c50:	1b 7e 08             	sbb    0x8(%esi),%edi
-	...
-
-00007c54 <boot_sig>:
-	...
-    7e18:	00 55 aa             	add    %dl,-0x56(%ebp)
-
-00007e1b <protected_mode_start>:
-    7e1b:	66 b8 10 00          	mov    $0x10,%ax
-    7e1f:	8e d8                	mov    %eax,%ds
-    7e21:	8e d0                	mov    %eax,%ss
-    7e23:	8e c0                	mov    %eax,%es
-    7e25:	8e e0                	mov    %eax,%fs
-    7e27:	8e e8                	mov    %eax,%gs
-    7e29:	bc 1b 7c 00 00       	mov    $0x7c1b,%esp
-    7e2e:	e8 cd fd ff ff       	call   7c00 <_os_init>
-    7e33:	b8 00 a0 00 00       	mov    $0xa000,%eax
-    7e38:	0f 22 d8             	mov    %eax,%cr3
-    7e3b:	0f 20 e0             	mov    %cr4,%eax
-    7e3e:	83 c8 10             	or     $0x10,%eax
-    7e41:	0f 22 e0             	mov    %eax,%cr4
-    7e44:	0f 20 c0             	mov    %cr0,%eax
-    7e47:	0d 00 00 00 80       	or     $0x80000000,%eax
-    7e4c:	0f 22 c0             	mov    %eax,%cr0
-    7e4f:	eb fe                	jmp    7e4f <protected_mode_start+0x34>
-
-00007e51 <gdt_desc>:
-    7e51:	ff 07                	incl   (%edi)
-    7e53:	00                   	.byte 0x0
-    7e54:	90                   	nop
-	...
+00007e40 <_os_init>:
+    7e40:	b8 00 a0 00 00       	mov    $0xa000,%eax
+    7e45:	83 c8 07             	or     $0x7,%eax
+    7e48:	a3 00 98 00 00       	mov    %eax,0x9800
+    7e4d:	b8 00 b0 00 00       	mov    $0xb000,%eax
+    7e52:	83 c8 07             	or     $0x7,%eax
+    7e55:	a3 00 a0 00 00       	mov    %eax,0xa000
+    7e5a:	c3                   	ret    

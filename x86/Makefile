@@ -57,9 +57,9 @@ run: $(BIN_DIR)/$(OS_IMG)
 debug-bochs: build
 	@bochs -q -f bochs.cfg
 
-debug-qemu: all-debug
+debug-qemu: debug-build
 	@objcopy --only-keep-debug $(BIN_DIR)/$(OS_ELF) $(BUILD_DIR)/kernel.dbg
-	@qemu-system-i386 -s -S -drive file=$(BIN_DIR)/$(OS_BIN),index=0,media=disk,format=raw &
+	@qemu-system-i386 -s -S -drive file=$(BIN_DIR)/$(OS_IMG),index=0,media=disk,format=raw &
 	@gdb -s $(BUILD_DIR)/kernel.dbg \
 		-ex "target remote localhost:1234" \
 		-ex "set disassembly-flavor intel" \
