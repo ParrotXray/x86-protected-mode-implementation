@@ -17,7 +17,7 @@
             movw %ax, %gs
             movl $_start, %esp       
         boot_load:
-            movw $protected_mode_start, %bx       
+            movw $_protected_mode_start, %bx       
             movw $0x2, %cx          
             movw $0x240, %ax         
             int $0x13
@@ -27,16 +27,14 @@
             lgdt gdt_desc          
             movl $1, %eax
             lmsw %ax	     
-            jmp $KERNEL_CODE_SEG, $protected_mode_start
+            jmp $KERNEL_CODE_SEG, $_protected_mode_start
 
         boot_sig:
             .org 0x1fe
             .word 0xAA55   
 
-.section .text
-    .global protected_mode_start 
     .code32  
-    protected_mode_start:
+    _protected_mode_start:
 
         movw $KERNEL_DATA_SEG, %ax
         movw %ax, %ds             
