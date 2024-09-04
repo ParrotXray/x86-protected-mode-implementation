@@ -3,10 +3,10 @@
 .section .data
 
 .section .text
-    .global _start 
+    .global _start, timer_init
     .code16          
     _start:   
-        jmp $0, $offest
+        ljmp $0, $offest
 
         offest:                      
             movw $0, %ax          
@@ -15,16 +15,18 @@
             movw %ax, %es
             movw %ax, %fs
             movw %ax, %gs
-            movl $_start, %esp       
+            movl $_start, %esp 
+
         boot_load:
             movw $_protected_mode_start, %bx       
             movw $0x2, %cx          
             movw $0x240, %ax         
             int $0x13
-            jc boot_load             
+            jc boot_load     
 
             cli                      
-            lgdt gdt_desc          
+            lgdt gdt_desc
+            lidt idt_desc         
             movl $1, %eax
             lmsw %ax	     
             jmp $KERNEL_CODE_SEG, $_protected_mode_start
@@ -35,7 +37,6 @@
 
     .code32  
     _protected_mode_start:
-
         movw $KERNEL_DATA_SEG, %ax
         movw %ax, %ds             
         movw %ax, %ss            
@@ -57,10 +58,27 @@
         orl $(1 << 31), %eax
         movl %eax, %cr0
 
+        sti
+
         jmp . 
+
+    timer_init:
+        push %ds 
+        pusha
+
+        mov $0x20, %al
+        outb %al, $0x20
+
+        popa
+        pop %ds
+        iret 
 
     gdt_desc: 
         .word (256*8) - 1        
         .long gdt_table         
+
+    idt_desc: 
+        .word (256*8) - 1        
+        .long idt_table      
 
         
