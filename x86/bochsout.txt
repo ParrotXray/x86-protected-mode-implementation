@@ -36,7 +36,7 @@
 00000000000i[IMG   ] Disk image modules
 00000000000i[IMG   ]   flat concat sparse dll growing undoable volatile vmware3
 00000000000i[IMG   ]   vmware4 vbox vpc vvfat
-00000000000i[MEM0  ] allocated memory at 0x7fd0b9eee010. after alignment, vector=0x7fd0b9eef000, block_size = 128K
+00000000000i[MEM0  ] allocated memory at 0x7f1e3f4a0010. after alignment, vector=0x7f1e3f4a1000, block_size = 128K
 00000000000i[MEM0  ] 128.00MB
 00000000000i[MEM0  ] mem block size = 0x00020000, blocks=1024
 00000000000i[MEM0  ] rom at 0xfffe0000/131072 ('/usr/local/share/bochs/BIOS-bochs-latest')
@@ -48,7 +48,7 @@
 00000000000i[DEV   ] PIIX3 PCI-to-ISA bridge present at device 1, function 0
 00000000000i[PLUGIN] init_dev of 'cmos' plugin device by virtual method
 00000000000i[CMOS  ] Using local time for initial clock
-00000000000i[CMOS  ] Setting initial clock to: Tue Sep  3 22:58:32   2024 tz=utc (time0=1725404312)
+00000000000i[CMOS  ] Setting initial clock to: Wed Sep  4 14:30:41   2024 tz=utc (time0=1725460241)
 00000000000i[PLUGIN] init_dev of 'dma' plugin device by virtual method
 00000000000i[DMA   ] channel 4 used by cascade
 00000000000i[PLUGIN] init_dev of 'pic' plugin device by virtual method
@@ -229,24 +229,24 @@
 00001710535i[BIOS  ] ata0-0: PCHS=20/16/63 translation=none LCHS=20/16/63
 00005143692i[BIOS  ] IDE time out
 00017175510i[BIOS  ] Booting from 0000:7c00
-00336660000p[XGUI  ] >>PANIC<< POWER button turned off.
-00336660000i[CPU0  ] CPU is in protected mode (active)
-00336660000i[CPU0  ] CS.mode = 32 bit
-00336660000i[CPU0  ] SS.mode = 32 bit
-00336660000i[CPU0  ] EFER   = 0x00000000
-00336660000i[CPU0  ] | EAX=e0000011  EBX=00007e00  ECX=00090002  EDX=00000080
-00336660000i[CPU0  ] | ESP=00007c00  EBP=00000000  ESI=000e0000  EDI=0000ffac
-00336660000i[CPU0  ] | IOPL=0 id vip vif ac vm rf nt of df if tf SF zf af PF cf
-00336660000i[CPU0  ] | SEG sltr(index|ti|rpl)     base    limit G D
-00336660000i[CPU0  ] |  CS:0008( 0001| 0|  0) 00000000 ffffffff 1 1
-00336660000i[CPU0  ] |  DS:0010( 0002| 0|  0) 00000000 ffffffff 1 1
-00336660000i[CPU0  ] |  SS:0010( 0002| 0|  0) 00000000 ffffffff 1 1
-00336660000i[CPU0  ] |  ES:0010( 0002| 0|  0) 00000000 ffffffff 1 1
-00336660000i[CPU0  ] |  FS:0010( 0002| 0|  0) 00000000 ffffffff 1 1
-00336660000i[CPU0  ] |  GS:0010( 0002| 0|  0) 00000000 ffffffff 1 1
-00336660000i[CPU0  ] | EIP=00007e34 (00007e34)
-00336660000i[CPU0  ] | CR0=0xe0000011 CR2=0x00000000
-00336660000i[CPU0  ] | CR3=0x00009000 CR4=0x00000010
-00336660000i[CMOS  ] Last time: 1725404396 tz=utc (Tue Sep  3 22:59:56   2024)
-00336660000i[XGUI  ] Exit
-00336660000i[SIM   ] quit_sim called with exit code 1
+00331156000p[XGUI  ] >>PANIC<< POWER button turned off.
+00331156000i[CPU0  ] CPU is in protected mode (active)
+00331156000i[CPU0  ] CS.mode = 32 bit
+00331156000i[CPU0  ] SS.mode = 32 bit
+00331156000i[CPU0  ] EFER   = 0x00000000
+00331156000i[CPU0  ] | EAX=00000000  EBX=00007e00  ECX=0000000a  EDX=00000001
+00331156000i[CPU0  ] | ESP=00007c00  EBP=00000000  ESI=000e0000  EDI=0000ffac
+00331156000i[CPU0  ] | IOPL=0 id vip vif ac vm rf nt of df if tf sf ZF af PF cf
+00331156000i[CPU0  ] | SEG sltr(index|ti|rpl)     base    limit G D
+00331156000i[CPU0  ] |  CS:0008( 0001| 0|  0) 00000000 ffffffff 1 1
+00331156000i[CPU0  ] |  DS:0010( 0002| 0|  0) 00000000 ffffffff 1 1
+00331156000i[CPU0  ] |  SS:0010( 0002| 0|  0) 00000000 ffffffff 1 1
+00331156000i[CPU0  ] |  ES:0010( 0002| 0|  0) 00000000 ffffffff 1 1
+00331156000i[CPU0  ] |  FS:0010( 0002| 0|  0) 00000000 ffffffff 1 1
+00331156000i[CPU0  ] |  GS:0010( 0002| 0|  0) 00000000 ffffffff 1 1
+00331156000i[CPU0  ] | EIP=00007e39 (00007e39)
+00331156000i[CPU0  ] | CR0=0xe0000011 CR2=0x00000000
+00331156000i[CPU0  ] | CR3=0x00009000 CR4=0x00000010
+00331156000i[CMOS  ] Last time: 1725460323 tz=utc (Wed Sep  4 14:32:03   2024)
+00331156000i[XGUI  ] Exit
+00331156000i[SIM   ] quit_sim called with exit code 1

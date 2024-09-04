@@ -30,7 +30,7 @@ $(OBJECT_DIR)/%.o: source/%.c | $(OBJECT_DIR)
 	$(CC)gcc $(CFLAGS) -c $< -o $@
 
 $(BIN_DIR)/$(OS_BIN): $(OBJ_FILES) | $(BIN_DIR)
-	$(CC)ld -Tlink.ld -m elf_i386 $(OBJ_FILES) -o $(BIN_DIR)/$(OS_ELF) 
+	$(CC)ld -T link.ld -m elf_i386 $(OBJ_FILES) -o $(BIN_DIR)/$(OS_ELF) 
 	${TOOL_PREFIX}objcopy -O binary $(BIN_DIR)/$(OS_ELF) $(BIN_DIR)/$(OS_BIN)
 	${TOOL_PREFIX}objdump -x -d -S $(BIN_DIR)/$(OS_ELF) > $(BIN_DIR)/$(OS_NAME)_dis.txt	
 	${TOOL_PREFIX}readelf -a $(BIN_DIR)/$(OS_ELF) > $(BIN_DIR)/$(OS_NAME)_elf.txt
@@ -64,5 +64,3 @@ debug-qemu: debug-build
 		-ex "target remote localhost:1234" \
 		-ex "set disassembly-flavor intel" \
 		-ex "set architecture i8086" \
-		-ex "continue" \
-		-ex "quit"

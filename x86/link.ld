@@ -11,6 +11,11 @@ SECTIONS
         build/obj/boot.o(.data);
     }
 
+    .text BLOCK(4K): {
+        * (.multiboot) /* boot.o (.multiboot) */
+        * (.text)
+    }
+
     .text : SUBALIGN(16) {
         *(.text*);
     }
