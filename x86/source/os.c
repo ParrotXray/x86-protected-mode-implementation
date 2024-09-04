@@ -19,7 +19,7 @@ struct IDTDescriptor {
 
 uint8_t map_phy_buffer[PG_4K] PG_4K_Aligned = {0x36};
 
-static uint32_t page_table[PG_SIZE] PG_4K_Aligned = {0x80};
+static uint32_t page_table[PG_SIZE] PG_4K_Aligned = {1};
 
 uint32_t pg_dir[PG_SIZE] PG_4K_Aligned = {
     [0] = (0) | PDE_P | PDE_PS | PDE_W | PDE_U,	  
