@@ -25,9 +25,15 @@ uint32_t pg_dir[PG_SIZE] PG_4K_Aligned = {
     [0] = (0) | PDE_P | PDE_PS | PDE_W | PDE_U,	  
 };
 
+uint32_t task_0_dpl_3_stack[PG_SIZE]; 
+
 struct GDTDescriptor gdt_table[256] = {
     [KERNEL_CODE_SEG / 8] = {0xffff, 0x0000, 0x9a00, 0x00cf},
-    [KERNEL_DATA_SEG / 8] = {0xffff, 0x0000, 0x9200, 0x00cf}
+    [KERNEL_DATA_SEG / 8] = {0xffff, 0x0000, 0x9200, 0x00cf},
+
+    [APP_CODE_SEG / 8] = {0xffff, 0x0000, 0xfa00, 0x00cf},
+    [APP_DATA_SEG / 8] = {0xffff, 0x0000, 0xf300, 0x00cf}
+
 };
 
 struct IDTDescriptor idt_table[256] = {};

@@ -58,27 +58,40 @@
         orl $(1 << 31), %eax
         movl %eax, %cr0
 
-        sti
-
-        jmp . 
-
-    timer_init:
-        push %ds 
-        pusha
-
-        mov $0x20, %al
-        outb %al, $0x20
-
-        popa
-        pop %ds
+        pushl $APP_DATA_SEG
+        pushl $task_0_dpl_3_stack + 1024 * 4
+        pushl $0
+        pushl $APP_CODE_SEG
+        pushl $task_0_entry
         iret 
 
-    gdt_desc: 
-        .word (256*8) - 1        
-        .long gdt_table         
+        timer_init:
+            pushw %ds 
+            pusha
 
-    idt_desc: 
-        .word (256*8) - 1        
-        .long idt_table      
+            movb $0x20, %al
+            outb %al, $0x20
+
+            popa
+            popw %ds
+            iret 
+
+        task_0_entry:
+            movw %ss, %ax
+            movw %ax, %ds             
+            movw %ax, %ss            
+            movw %ax, %es              
+            movw %ax, %fs            
+            movw %ax, %gs              
+
+            jmp . 
+
+        gdt_desc: 
+            .word (256*8) - 1        
+            .long gdt_table         
+
+        idt_desc: 
+            .word (256*8) - 1        
+            .long idt_table      
 
         
