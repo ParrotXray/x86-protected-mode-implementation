@@ -37,14 +37,14 @@ $(BIN_DIR)/$(OS_BIN): $(OBJ_FILES) | $(BIN_DIR)
 	dd if=/dev/zero of=$(BIN_DIR)/$(OS_IMG) bs=512 count=20160	
 	dd if=$(BIN_DIR)/$(OS_BIN) of=$(BIN_DIR)/$(OS_IMG) conv=notrunc
 
-debug-build: O := -O0
-debug-build: CFLAGS := -g -c -std=gnu99 -ffreestanding $(O) $(W) -fomit-frame-pointer
-debug-build: LDFLAGS := -ffreestanding $(O) -fno-pie -fno-stack-protector -nostdlib -nostdinc -lgcc
-debug-build: clean $(BIN_DIR)/$(OS_BIN)
+all-debug: O := -O0
+all-debug: CFLAGS := -g -c -std=gnu99 -ffreestanding $(O) $(W) -fomit-frame-pointer
+all-debug: LDFLAGS := -ffreestanding $(O) -fno-pie -fno-stack-protector -nostdlib -nostdinc -lgcc
+all-debug: clean $(BIN_DIR)/$(OS_BIN)
 	@i686-elf-objdump -D $(BIN_DIR)/$(OS_ELF) > dump
 	@xxd $(BIN_DIR)/$(OS_ELF) > dump.hex
 
-build: $(BIN_DIR)/$(OS_BIN)
+all: $(BIN_DIR)/$(OS_BIN)
 
 clean:
 	@rm -rf $(BUILD_DIR)
@@ -54,10 +54,10 @@ run: $(BIN_DIR)/$(OS_IMG)
 	@sleep 1
 	@telnet 127.0.0.1 $(QEMU_MON_PORT)
 
-debug-bochs: build
+debug-bochs: all
 	@bochs -q -f bochs.cfg
 
-debug-qemu: debug-build
+debug-qemu: all-debug
 	@objcopy --only-keep-debug $(BIN_DIR)/$(OS_ELF) $(BUILD_DIR)/kernel.dbg
 	@qemu-system-i386 -s -S -drive file=$(BIN_DIR)/$(OS_IMG),index=0,media=disk,format=raw &
 	@gdb -s $(BUILD_DIR)/kernel.dbg \

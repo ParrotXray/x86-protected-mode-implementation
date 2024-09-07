@@ -15,15 +15,14 @@ void tty_set_theme(vga_atrributes fg, vga_atrributes bg) {
 }
 
 void tty_put_char(char chr) {
-    switch (chr) {
-    case '\n':
+    if (chr == '\n') {
         TTY_COLUMN = 0;
         ++TTY_ROW;
-    case '\r':
-        TTY_COLUMN = 0;
-    case '\t':
+    } else if (chr == '\t') {
         TTY_COLUMN += 4;
-    default:
+    } else if (chr == '\r') {
+        TTY_COLUMN = 0;
+    } else {
         *(buffer + TTY_COLUMN + TTY_ROW * TTY_WIDTH) = (theme_color | chr);
         ++TTY_COLUMN;
         if (TTY_COLUMN >= TTY_WIDTH) {
@@ -32,6 +31,11 @@ void tty_put_char(char chr) {
         }
     }
 
+    if (TTY_COLUMN >= TTY_WIDTH) {
+        TTY_COLUMN = 0;
+        ++TTY_ROW;
+    }
+    
     if (TTY_ROW >= TTY_HEIGHT) {
         tty_scroll_up();
         --TTY_ROW;
@@ -45,6 +49,7 @@ void tty_put_str(char* str) {
         ++str;
     }
 }
+
 
 void tty_scroll_up() {
     // TODO use memcpy
