@@ -21,6 +21,7 @@ export CXXFLAGS="$CFLAGS"
               --enable-iodebug \
               --disable-plugins \
               --disable-docbook \
+              --disable-sound   \
               --with-x --with-x11 --with-term --with-sdl2) || exit
 
 make && make install
