@@ -3,7 +3,7 @@
 .section .data
 
 .section .text
-    .global _start, timer_init
+    .global _start, timer_init, syscall_headler
     .code16          
     _start:   
         ljmp $0, $offest
@@ -68,6 +68,10 @@
         pushl $APP_CODE_SEG
         pushl $task_0_entry
         iret 
+
+    syscall_headler:
+        call do_syscall
+        ret
 
     task_0_entry:
         movw %ss, %ax

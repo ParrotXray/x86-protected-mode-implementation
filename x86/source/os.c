@@ -36,26 +36,38 @@ struct IDTDescriptor {
 //     }
 // }
 
+void do_syscall(int func, char* str, char color) {
+
+    if (func == 2) {
+        tty_set_theme(color, VGA_COLOR_BLACK);
+        tty_put_str(str);
+    }
+
+}
+
+void sys_show(char* str, char color) {
+    uint32_t addr[] = {0, SYSCALL_SEG};
+    __asm__ __volatile__("lcalll *(%[a])"::[a]"r"(addr));
+}
+
 void task_0 (void) {
-    // 加上下面这句会跑飞
-    // *(unsigned char *)MAP_ADDR = 0x1;
 
-    uint8_t color = 0;
+    // uint8_t color = 0;
+    int color = VGA_COLOR_GREEN;
+    char* str = 'task0';
     for (;;) {
-        color++;
+        sys_show(str, ++color);
 
-        // CPL=3时，非特权级模式下，无法使用cli指令
-        // __asm__ __volatile__("cli");
     }
 } 
 
-/**
- * @brief 任务1
- */
+
 void task_1 (void) {
-    uint8_t color = 0xff;
+    // uint8_t color = 0xff;
+    int color = VGA_COLOR_WHITE;
+    char* str = 'task1';
     for (;;) {
-        color--;
+        sys_show(str, --color);
     }
 }
 
@@ -95,7 +107,9 @@ struct GDTDescriptor gdt_table[256] = {
     [APP_DATA_SEG / 8] = {0xffff, 0x0000, 0xf300, 0x00cf},
 
     [TASK0_TSS_SEG / 8] = {0x0068, 0, 0xe900, 0x0},
-    [TASK1_TSS_SEG / 8] = {0x0068, 0, 0xe900, 0x0}
+    [TASK1_TSS_SEG / 8] = {0x0068, 0, 0xe900, 0x0},
+
+    [SYSCALL_SEG / 8] = {0x0000, KERNEL_CODE_SEG, 0xec03, 0x0}
 
 };
 
@@ -115,6 +129,7 @@ void task_sched(void) {
 }
 
 void timer_init (void);
+void syscall_headler(void); 
 
 void _os_init(void) {
     outb(0x11, 0x20);
@@ -144,6 +159,7 @@ void _os_init(void) {
 
     gdt_table[TASK0_TSS_SEG / 8].base_address = (uint16_t)(uint32_t)task0_tss;
     gdt_table[TASK1_TSS_SEG / 8].base_address = (uint16_t)(uint32_t)task1_tss;
+    gdt_table[SYSCALL_SEG / 8].segment_limit = (uint16_t)(uint32_t)syscall_headler;
 
     pg_dir[MAP_ADDR >> 22] = (uint32_t)page_table | PDE_P | PDE_W | PDE_U;
     page_table[(MAP_ADDR >> 12) & 0x3FF] = (uint32_t)map_phy_buffer | PDE_P | PDE_W | PDE_U;

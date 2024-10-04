@@ -10,7 +10,7 @@ ELF Header:
   Version:                           0x1
   Entry point address:               0x7c00
   Start of program headers:          52 (bytes into file)
-  Start of section headers:          27884 (bytes into file)
+  Start of section headers:          28428 (bytes into file)
   Flags:                             0x0
   Size of this header:               52 (bytes)
   Size of program headers:           32 (bytes)
@@ -22,20 +22,20 @@ ELF Header:
 Section Headers:
   [Nr] Name              Type            Addr     Off    Size   ES Flg Lk Inf Al
   [ 0]                   NULL            00000000 000000 000000 00      0   0  0
-  [ 1] .boottext         PROGBITS        00007c00 000c00 000283 00  AX  0   0  1
-  [ 2] .text             PROGBITS        00007e90 000e90 00039d 00  AX  0   0 16
+  [ 1] .boottext         PROGBITS        00007c00 000c00 000289 00  AX  0   0  1
+  [ 2] .text             PROGBITS        00007e90 000e90 00042d 00  AX  0   0 16
   [ 3] .data             PROGBITS        00009000 002000 003914 00  WA  0   0 4096
   [ 4] .bss              NOBITS          0000c920 005914 00480a 00  WA  0   0 32
-  [ 5] .debug_line       PROGBITS        00000000 005914 000297 00      0   0  1
-  [ 6] .debug_line_str   PROGBITS        00000000 005bab 0000a5 01  MS  0   0  1
-  [ 7] .debug_info       PROGBITS        00000000 005c50 0004c5 00      0   0  1
-  [ 8] .debug_abbrev     PROGBITS        00000000 006115 000254 00      0   0  1
-  [ 9] .debug_aranges    PROGBITS        00000000 006370 000060 00      0   0  8
-  [10] .debug_str        PROGBITS        00000000 0063d0 0002f2 01  MS  0   0  1
-  [11] .debug_frame      PROGBITS        00000000 0066c4 000190 00      0   0  4
-  [12] .symtab           SYMTAB          00000000 006854 000270 10     13  13  4
-  [13] .strtab           STRTAB          00000000 006ac4 000192 00      0   0  1
-  [14] .shstrtab         STRTAB          00000000 006c56 000093 00      0   0  1
+  [ 5] .debug_line       PROGBITS        00000000 005914 0002c4 00      0   0  1
+  [ 6] .debug_line_str   PROGBITS        00000000 005bd8 0000a5 01  MS  0   0  1
+  [ 7] .debug_info       PROGBITS        00000000 005c7d 0005a0 00      0   0  1
+  [ 8] .debug_abbrev     PROGBITS        00000000 00621d 0002a3 00      0   0  1
+  [ 9] .debug_aranges    PROGBITS        00000000 0064c0 000060 00      0   0  8
+  [10] .debug_str        PROGBITS        00000000 006520 00031b 01  MS  0   0  1
+  [11] .debug_frame      PROGBITS        00000000 00683c 0001e4 00      0   0  4
+  [12] .symtab           SYMTAB          00000000 006a20 0002a0 10     13  13  4
+  [13] .strtab           STRTAB          00000000 006cc0 0001b6 00      0   0  1
+  [14] .shstrtab         STRTAB          00000000 006e76 000093 00      0   0  1
 Key to Flags:
   W (write), A (alloc), X (execute), M (merge), S (strings), I (info),
   L (link order), O (extra OS processing required), G (group), T (TLS),
@@ -46,7 +46,7 @@ There are no section groups in this file.
 
 Program Headers:
   Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
-  LOAD           0x000000 0x00007000 0x00007000 0x0122d 0x0122d R E 0x1000
+  LOAD           0x000000 0x00007000 0x00007000 0x012bd 0x012bd R E 0x1000
   LOAD           0x002000 0x00009000 0x00009000 0x03914 0x0812a RW  0x1000
 
  Section to Segment mapping:
@@ -59,46 +59,49 @@ There is no dynamic section in this file.
 There are no relocations in this file.
 No processor specific unwind information to decode
 
-Symbol table '.symtab' contains 39 entries:
+Symbol table '.symtab' contains 42 entries:
    Num:    Value  Size Type    Bind   Vis      Ndx Name
      0: 00000000     0 NOTYPE  LOCAL  DEFAULT  UND 
      1: 00000000     0 FILE    LOCAL  DEFAULT  ABS boot.o
      2: 00007c05     0 NOTYPE  LOCAL  DEFAULT    1 offest
      3: 00007c18     0 NOTYPE  LOCAL  DEFAULT    1 boot_load
      4: 00007e00     0 NOTYPE  LOCAL  DEFAULT    1 _protected_mode_start
-     5: 00007e77     0 NOTYPE  LOCAL  DEFAULT    1 gdt_desc
-     6: 00007e7d     0 NOTYPE  LOCAL  DEFAULT    1 idt_desc
+     5: 00007e7d     0 NOTYPE  LOCAL  DEFAULT    1 gdt_desc
+     6: 00007e83     0 NOTYPE  LOCAL  DEFAULT    1 idt_desc
      7: 00007c41     0 NOTYPE  LOCAL  DEFAULT    1 boot_sig
-     8: 00007e4f     0 NOTYPE  LOCAL  DEFAULT    1 task_0_entry
+     8: 00007e55     0 NOTYPE  LOCAL  DEFAULT    1 task_0_entry
      9: 00000000     0 FILE    LOCAL  DEFAULT  ABS os.c
     10: 0000a000  4096 OBJECT  LOCAL  DEFAULT    3 page_table
     11: 0000c900     4 OBJECT  LOCAL  DEFAULT    3 task_tss.0
     12: 00000000     0 FILE    LOCAL  DEFAULT  ABS tty.c
     13: 0000c100  2048 OBJECT  GLOBAL DEFAULT    3 gdt_table
-    14: 0000f920  4096 OBJECT  GLOBAL DEFAULT    4 task_1_dpl_0_stack
-    15: 00007e90    22 FUNC    GLOBAL DEFAULT    2 task_0
-    16: 0000c000   104 OBJECT  GLOBAL DEFAULT    3 task0_tss
-    17: 00009000  4096 OBJECT  GLOBAL DEFAULT    3 map_phy_buffer
-    18: 00007e61     0 NOTYPE  GLOBAL DEFAULT    1 timer_init
-    19: 0000c080   104 OBJECT  GLOBAL DEFAULT    3 task1_tss
-    20: 00007f18   299 FUNC    GLOBAL DEFAULT    2 _os_init
-    21: 00007c00     0 NOTYPE  GLOBAL DEFAULT    1 _start
-    22: 0000c910     4 OBJECT  GLOBAL DEFAULT    3 buffer
-    23: 00007ebc    34 FUNC    GLOBAL DEFAULT    2 outb
-    24: 00011120     2 OBJECT  GLOBAL DEFAULT    4 theme_color
-    25: 00011128     2 OBJECT  GLOBAL DEFAULT    4 TTY_ROW
-    26: 0000e920  4096 OBJECT  GLOBAL DEFAULT    4 task_0_dpl_0_stack
-    27: 0000b000  4096 OBJECT  GLOBAL DEFAULT    3 pg_dir
-    28: 000081cd    96 FUNC    GLOBAL DEFAULT    2 tty_clear
-    29: 0000819a    49 FUNC    GLOBAL DEFAULT    2 tty_put_str
-    30: 0000d920  4096 OBJECT  GLOBAL DEFAULT    4 task_1_dpl_3_stack
-    31: 0000c920  4096 OBJECT  GLOBAL DEFAULT    4 task_0_dpl_3_stack
-    32: 00008050    50 FUNC    GLOBAL DEFAULT    2 tty_set_theme
-    33: 00011124     4 OBJECT  GLOBAL DEFAULT    4 TTY_COLUMN
-    34: 00008082   280 FUNC    GLOBAL DEFAULT    2 tty_put_char
-    35: 00007ea6    22 FUNC    GLOBAL DEFAULT    2 task_1
-    36: 00010920  2048 OBJECT  GLOBAL DEFAULT    4 idt_table
-    37: 00007ede    58 FUNC    GLOBAL DEFAULT    2 task_sched
-    38: 000081cb     2 FUNC    GLOBAL DEFAULT    2 tty_scroll_up
+    14: 00007ecd    37 FUNC    GLOBAL DEFAULT    2 sys_show
+    15: 00007e4f     0 NOTYPE  GLOBAL DEFAULT    1 syscall_headler
+    16: 0000f920  4096 OBJECT  GLOBAL DEFAULT    4 task_1_dpl_0_stack
+    17: 00007ef2    46 FUNC    GLOBAL DEFAULT    2 task_0
+    18: 0000c000   104 OBJECT  GLOBAL DEFAULT    3 task0_tss
+    19: 00009000  4096 OBJECT  GLOBAL DEFAULT    3 map_phy_buffer
+    20: 00007e67     0 NOTYPE  GLOBAL DEFAULT    1 timer_init
+    21: 0000c080   104 OBJECT  GLOBAL DEFAULT    3 task1_tss
+    22: 00007faa   310 FUNC    GLOBAL DEFAULT    2 _os_init
+    23: 00007e90    61 FUNC    GLOBAL DEFAULT    2 do_syscall
+    24: 00007c00     0 NOTYPE  GLOBAL DEFAULT    1 _start
+    25: 0000c910     4 OBJECT  GLOBAL DEFAULT    3 buffer
+    26: 00007f4e    34 FUNC    GLOBAL DEFAULT    2 outb
+    27: 00011120     2 OBJECT  GLOBAL DEFAULT    4 theme_color
+    28: 00011128     2 OBJECT  GLOBAL DEFAULT    4 TTY_ROW
+    29: 0000e920  4096 OBJECT  GLOBAL DEFAULT    4 task_0_dpl_0_stack
+    30: 0000b000  4096 OBJECT  GLOBAL DEFAULT    3 pg_dir
+    31: 0000825d    96 FUNC    GLOBAL DEFAULT    2 tty_clear
+    32: 0000822a    49 FUNC    GLOBAL DEFAULT    2 tty_put_str
+    33: 0000d920  4096 OBJECT  GLOBAL DEFAULT    4 task_1_dpl_3_stack
+    34: 0000c920  4096 OBJECT  GLOBAL DEFAULT    4 task_0_dpl_3_stack
+    35: 000080e0    50 FUNC    GLOBAL DEFAULT    2 tty_set_theme
+    36: 00011124     4 OBJECT  GLOBAL DEFAULT    4 TTY_COLUMN
+    37: 00008112   280 FUNC    GLOBAL DEFAULT    2 tty_put_char
+    38: 00007f20    46 FUNC    GLOBAL DEFAULT    2 task_1
+    39: 00010920  2048 OBJECT  GLOBAL DEFAULT    4 idt_table
+    40: 00007f70    58 FUNC    GLOBAL DEFAULT    2 task_sched
+    41: 0000825b     2 FUNC    GLOBAL DEFAULT    2 tty_scroll_up
 
 No version information found in this file.
