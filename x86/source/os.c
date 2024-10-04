@@ -109,7 +109,7 @@ struct GDTDescriptor gdt_table[256] = {
     [TASK0_TSS_SEG / 8] = {0x0068, 0, 0xe900, 0x0},
     [TASK1_TSS_SEG / 8] = {0x0068, 0, 0xe900, 0x0},
 
-    [SYSCALL_SEG / 8] = {0x0000, KERNEL_CODE_SEG, 0xec03, 0x0}
+    [SYSCALL_SEG / 8] = {0x0000, KERNEL_CODE_SEG, 0xec03, 0}
 
 };
 
